@@ -21,23 +21,40 @@ class BooksModel {
     return $this->books;
   }
 
+  public function listMyBooks($member_id) {
+    try {
+        $stmt = $this->db->prepare('SELECT * FROM books WHERE books.member_id = :member_id ORDER BY id');
+
+        $stmt->bindParam(':member_id', $member_id, PDO::PARAM_INT);
+
+        $stmt->execute();
+        $this->books = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      } catch (PDOException $ex) {
+        var_dump($ex->getMessage());
+    }
+
+    return $this->books;
+}
+
   // Add books method 
-  public function add_book($title, $author, $description, $isbn, $cover_image, $status) {
+  public function add_book($title, $author, $description, $isbn, $cover_image, $status, $member_id) {
 
     try {
-        $stmt = $this->db->prepare("INSERT INTO books(title,author,description,isbn,cover_image,status) VALUES(:title,:author,:description,:isbn,:cover_image,:status)");
-  
+        $stmt = $this->db->prepare("INSERT INTO books(title,author,description,isbn,cover_image,status,member_id) VALUES(:title,:author,:description,:isbn,:cover_image,:status,:member_id)");
+        
         $cover_path = '../media/covers/' . $cover_image['name'];
         move_uploaded_file($cover_image['tmp_name'], $cover_path);
-        // $cover_image = '../media/covers/' . $_FILES['cover_image']['name'];
+        $media_path = '../media/covers/' . str_replace(' ', '%20', $cover_image['name']);
 
         $stmt->bindParam(':title', $title, PDO::PARAM_STR);
         $stmt->bindParam(':author', $author, PDO::PARAM_STR);
         $stmt->bindParam(':description', $description, PDO::PARAM_STR);
         $stmt->bindParam(':isbn', $isbn, PDO::PARAM_STR);
-        $stmt->bindParam(':cover_image', $cover_path, PDO::PARAM_STR);
+        $stmt->bindParam(':cover_image', $media_path, PDO::PARAM_STR);
         $stmt->bindParam(':status', $status, PDO::PARAM_STR);
-  
+        $stmt->bindParam(':member_id', $member_id, PDO::PARAM_STR);
+      
         $stmt->execute();
         $books_id = $this->db->lastInsertId();
     
@@ -47,15 +64,13 @@ class BooksModel {
     }
 
     //update books method
-    public function update_book($id, $stauts) {
+    public function update_book($id, $status) {
 
     try {
-      // UPDATE `books` SET `status` = '1' WHERE `books`.`id` = 3
         $stmt = $this->db->prepare("UPDATE books SET status = :status WHERE books.id = :id");
-      // INSERT INTO `books` (`id`, `title`, `author`, `description`, `isbn`, `cover_image`, `status`) VALUES ('4', 'title', 'auth', 'desc', '123456789456', '/path', '0');
-        $stmt = $this->db->prepare("INSERT INTO books(title,author,description,isbn,cover_image,status) VALUES(:title,:author,:description,:isbn,:cover_image,:status)");
   
-        $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $id, PDO::PARAM_STR);
+        $stmt->bindParam(':status', $status, PDO::PARAM_STR);
   
         $stmt->execute();
     
@@ -65,8 +80,10 @@ class BooksModel {
     }
 
     public function testfunc(){
-      print("HELP ME");
+      print("Testing.");
     }
+
+
 }
 
 ?>

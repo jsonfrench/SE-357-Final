@@ -12,7 +12,9 @@ class CredentialsModel {
   // Add member method 
   public function add_credential($email, $password, $members_id) {
 
-    $stmt = $this->db->prepare("INSERT INTO credentials(email, password, members_id) VALUES(:email, :password, :members_id)");
+    $stmt = $this->db->prepare('INSERT INTO credentials(email, password, members_id) 
+    -- VALUES(:email, :password, :members_id)");
+    VALUES(:email, CONCAT("*", UPPER(SHA1(UNHEX(SHA1(:password))))), :members_id)');
     $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->bindParam(':password', $password, PDO::PARAM_STR);
     $stmt->bindParam(':members_id', $members_id, PDO::PARAM_STR);
@@ -21,21 +23,20 @@ class CredentialsModel {
 
   }
 
-
 public function verify_login($email, $password) {
 	try {
-		$stmt = $this->db->prepare('SELECT * FROM credentials where email =:email AND password =:password');
+		$stmt = $this->db->prepare('SELECT * FROM credentials where email =:email AND password = CONCAT("*", UPPER(SHA1(UNHEX(SHA1(:password)))))');
 
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-		$stmt->bindParam(':password', $password, PDO::PARAM_STR);
-	  	$stmt->execute();
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->bindParam(':password', $password, PDO::PARAM_STR);
+    $stmt->execute();
 
-        $found_member = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return sizeof($found_member) > 0;
+    $found_member = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return sizeof($found_member) > 0;
 
-    } catch(PDOException $ex) {
-		 var_dump($ex->getMessage());
-	  }
+  } catch(PDOException $ex) {
+    var_dump($ex->getMessage());
+  }
 }
 
   public function listCredentials () {
@@ -49,6 +50,7 @@ public function verify_login($email, $password) {
 
     return $this->class_levels;
   }
+
 }
 
 ?>

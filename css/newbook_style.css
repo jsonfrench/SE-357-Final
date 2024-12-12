@@ -1,30 +1,38 @@
 body {
-    background-color: #2a2d2b;
+    background-color: #151212;
     font-family: Arial, Helvetica, sans-serif;
-    margin: 0;
+    margin: 0px 0px;
 }
 
 hr {
     height: 1px;
     background-color: #151212;
-    border: 0;
+    border: 0px;
 }
 
 .form-background {
     background-color: #898e8f;
     width: 50%;
-    margin: 20px auto; 
-    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px; 
+    padding: 20px; 
     border: 5px solid #2a2d2b;
 }
 
-form legend {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
+.button-container {
+    text-align: center;
+    margin-top: 10px; 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.button-container input {
+    margin: 0 10px; 
 }
 
 form label {
+    font-weight: bold;
     display: block;
     font-size: 16px;
     margin-top: 10px;
@@ -38,31 +46,16 @@ form input[type="text"], form input[type="password"] {
     box-sizing: border-box;
 }
 
-.button-container {
-    text-align: center;
-    margin-top: 20px; 
-}
-
 form input[type="submit"], form input[type="reset"] {
     background-color: #d15339;
     color: white;
     border: none;
     font-size: 16px;
     padding: 10px 20px;
+    border-radius: 5px; 
     box-shadow: 5px 5px #292d2b;
-    cursor: pointer;
 }
 
 form input[type="submit"]:hover, form input[type="reset"]:hover {
-    background-color: #6d5b53;
-}
-
-a {
-    text-align: center;
-    color: #ff2a00;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
+    background-color: #6d5b53; 
 }

@@ -1,7 +1,7 @@
 <?php
 
 $host = "localhost:8889";
-$dbname= "student1000";
+$dbname= "book_club";
 $username = "root";
 $password = "root";
 

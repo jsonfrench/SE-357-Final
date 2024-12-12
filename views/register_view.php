@@ -5,11 +5,12 @@ ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_report
 <html>
   <head>
     <title>Register</title>
-    <link rel="stylesheet" type="text/css" href="../css/register_style.css">
     <script type="text/javascript" src="../scripts/register.js"></script>
-    </head>
+    <link rel="stylesheet" type="text/css" href="../css/register_style.css">
+  </head>
+
+<div class="form-background">
 <form method="post" action="../controllers/register.php?action=add" onSubmit="return validateRegister(this)">
-  <fieldset>
     <legend>New Member:</legend>
 
     <label for="name">Name: </label>
@@ -30,8 +31,13 @@ ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_report
     <hr>
 
     <input type="reset" value="Reset">&nbsp;&nbsp;<input type="submit" value="Add">
-  </fieldset>
-</form>
+
+    <p><?= $message; ?> <br><br>
+
+  </form>
+
 <a href="login.php">Back to Login</a>
+
+</div>
 
 </html>

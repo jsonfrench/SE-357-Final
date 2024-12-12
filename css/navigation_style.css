@@ -1,0 +1,48 @@
+/* body {
+    margin: 0;
+    padding: 0;
+} */
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #2a2d2b;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px; 
+    text-decoration: none;
+}
+
+li.right {
+    float: right; 
+    height: 14px; /* force fix for incorrect button padding*/
+}
+
+li a:hover {
+    background-color: #151212;
+}
+
+li.right button:hover {
+    background-color: #151212;
+}
+
+li.right button {
+    background-color: #2a2d2b;
+    color: white;
+    border: none;
+    padding: 14px 16px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+}

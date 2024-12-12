@@ -1,59 +1,72 @@
 <?php
 
-ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
+// ini_set('display_errors', 1); ini_set('display_startup_errors', 1); error_reporting(E_ALL);
 
 session_start();
 
+// print_r($_SESSION);
+
+if (!isset($_SESSION['email'])){
+    header('Location: login.php');
+    exit();
+}
+
 require_once '../models/books_model.php';
 require_once '../models/members_model.php';
+require_once '../models/checkouts_model.php';
 
 $books_model = new BooksModel();
+$checkouts_model = new CheckOutsModel();
 
 $books_list = $books_model->listBooks();
 
-print_r($_SESSION);
-
 $members_model = new MembersModel();
 $current_member = $members_model->find_member_by_email($_SESSION["email"]);
+$current_member_id = $current_member["0"]["members_id"];
 
-print_r($current_member);
-print("Members id: " . $current_member["0"]["members_id"]);
-
-/*
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $getvars = $_GET;
-    if (isset($getvars["action"]) && $getvars["action"] == 'add') {
- 
-         print_r($_POST);  // print what got added to database
-         // call the model method to insert the book
-         $title = $_POST['title'];
-         $author = $_POST['author'];
-         $description = $_POST['description'];
-         $isbn = $_POST['isbn'];
-         // $cover_image = '../media/covers/' . $_FILES['cover_image']['name'];
-         $cover_image = $_FILES['cover_image'];
- 
-         $added_book = $books_model->add_book($title, $author, $description, $isbn, $cover_image, 1);
- 
-         //print_r($added_book);
-         echo "added book";
-     }
- }  
-*/
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action'])) { 
 
-    $added_book = $books_model->testfunc();
-    // $getvars = $_GET;
-    // if (isset($getvars["action"]) && $getvars["action"] == 'test') {
- 
-    //      print_r($_POST);  // print what got added to database
-    //      // call the model method to insert the book
-    //      $added_book = $books_model->testfunc();
- 
-    //      //print_r($added_book);
-    //  }
- }  
+        $book_id = $_POST['book_id'];
+        $new_status = $_POST['new_status'];
+        $updated_book = $books_model->update_book($book_id, $new_status); // update book status
 
+        $member_id = $current_member["0"]["members_id"];
+        $book_id = $_POST['book_id'];
+        $checkout_time = date("Y-m-d-H:i:s");
+        $action = $_POST['action'];
+
+        $checkout = $checkouts_model->add_check_out($member_id, $book_id, $checkout_time, $action); // log checkout
+        
+        // Redirect to avoid resubmission
+        header('Location: books.php');
+        exit();
+    }
+}
+
+function set_status($book, $has_book, $current_member_id) {
+    $id = $book['id'];
+    if ($book['status'] == 0 && $has_book) {
+        return '<form method="post" action="../controllers/books.php?action=checkout">
+            <input type="hidden" name="book_id" value="' . $id . '"> 
+            <input type="hidden" name="new_status" value="' . 1 . '"> 
+            <input type="hidden" name="action" value="return"> 
+            <input type="submit" value="Return">
+        </form>';
+    } elseif ($book['status'] == 0) {
+        return 'Unavailable'; 
+    } elseif ($book['member_id'] == $current_member_id) {
+        return 'Owned'; 
+    } else {
+        return '<form method="post" action="../controllers/books.php?action=checkout">
+            <input type="hidden" name="book_id" value="' . $id . '">
+            <input type="hidden" name="new_status" value="0">
+            <input type="hidden" name="action" value="borrow">
+            <input type="submit" value="Borrow">
+        </form>';
+    }
+}
+
+require_once '../views/navigation_view.php';
 require_once '../views/books_view.php';
-?>
